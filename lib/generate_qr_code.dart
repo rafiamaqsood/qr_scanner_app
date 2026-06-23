@@ -15,7 +15,7 @@ class _GenerateQrCodeState extends State<GenerateQrCode> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true, 
+      resizeToAvoidBottomInset: true,
 
       appBar: AppBar(title: const Text("QR Generator")),
 
@@ -24,7 +24,6 @@ class _GenerateQrCodeState extends State<GenerateQrCode> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-
               TextField(
                 controller: controller,
                 decoration: InputDecoration(
@@ -39,8 +38,18 @@ class _GenerateQrCodeState extends State<GenerateQrCode> {
 
               ElevatedButton(
                 onPressed: () {
+                  final text = controller.text.trim();
+
+                  if (text.isEmpty) return;
+
                   setState(() {
-                    data = controller.text;
+                    data = ""; 
+                  });
+
+                  Future.delayed(const Duration(milliseconds: 50), () {
+                    setState(() {
+                      data = text; 
+                    });
                   });
                 },
                 child: const Text("Generate QR Code"),
@@ -55,13 +64,11 @@ class _GenerateQrCodeState extends State<GenerateQrCode> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: const [
-                      BoxShadow(
-                        blurRadius: 10,
-                        color: Colors.black12,
-                      ),
+                      BoxShadow(blurRadius: 10, color: Colors.black12),
                     ],
                   ),
                   child: QrImageView(
+                    key: ValueKey(data),
                     data: data,
                     size: 200,
                   ),

@@ -9,8 +9,8 @@ class ScanQrCode extends StatefulWidget {
 }
 
 class _ScanQrCodeState extends State<ScanQrCode> {
-  String qrResult = 'Scanned data will appear here';
-  bool isDetected = false;
+  String qrResult = "Scanned Data will appear here";
+  String lastScanned = "";
 
   @override
   Widget build(BuildContext context) {
@@ -24,27 +24,23 @@ class _ScanQrCodeState extends State<ScanQrCode> {
 
       body: Column(
         children: [
-
           Expanded(
             flex: 3,
             child: Stack(
               children: [
-
                 // 📷 QR SCANNER
                 MobileScanner(
                   onDetect: (capture) {
-                    if (isDetected) return;
+                    final barcode = capture.barcodes.first;
+                    final value = barcode.rawValue;
 
-                    for (final barcode in capture.barcodes) {
-                      final value = barcode.rawValue;
+                    if (value == null || value.isEmpty) return;
+                    if (value == lastScanned) return;
 
-                      if (value != null && value.isNotEmpty) {
-                        setState(() {
-                          qrResult = value;
-                          isDetected = true;
-                        });
-                      }
-                    }
+                    setState(() {
+                      lastScanned = value;
+                      qrResult = value;
+                    });
                   },
                 ),
 
@@ -53,10 +49,7 @@ class _ScanQrCodeState extends State<ScanQrCode> {
                     width: scanSize,
                     height: scanSize,
                     decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.deepPurple,
-                        width: 3,
-                      ),
+                      border: Border.all(color: Colors.deepPurple, width: 3),
                       borderRadius: BorderRadius.circular(15),
                     ),
                   ),
@@ -77,7 +70,6 @@ class _ScanQrCodeState extends State<ScanQrCode> {
               ),
             ),
           ),
-
         ],
       ),
     );
